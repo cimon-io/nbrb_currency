@@ -13,12 +13,12 @@ class NbrbCurrency < Money::Bank::VariableExchange
 
   def update_rates(cache=nil)
     exchange_rates(cache).each do |exchange_rate|
-      rate = exchange_rate.xpath("Rate").text
+      rate = exchange_rate.xpath("Rate").text.gsub('.', '').gsub(',', '.')
       currency = exchange_rate.xpath("CharCode").text
       scale = exchange_rate.xpath("Scale").text
       next if currency == "XDR"
-      add_rate(currency, "BYN", (BigDecimal.new(rate) / BigDecimal.new(scale)).to_f)
-      add_rate(currency, "BYR", (BigDecimal.new(rate) / BigDecimal.new(scale)).to_f * DENOMINATION_RATE)
+      add_rate(currency, "BYN", (BigDecimal(rate) / BigDecimal(scale)).to_f)
+      add_rate(currency, "BYR", (BigDecimal(rate) / BigDecimal(scale)).to_f * DENOMINATION_RATE)
     end
     add_rate("BYN", "BYN", 1)
     add_rate("BYR", "BYR", 1)
@@ -41,7 +41,7 @@ class NbrbCurrency < Money::Bank::VariableExchange
     unless rate
       from_base_rate = get_rate(from.currency, "BYN")
       to_base_rate = get_rate(to_currency, "BYN")
-      rate = (BigDecimal.new(from_base_rate, 8) / BigDecimal.new(to_base_rate, 8)).to_f
+      rate = (BigDecimal(from_base_rate, 8) / BigDecimal(to_base_rate, 8)).to_f
       raise "Rate #{from.currency} - #{to_currency} unknown!" unless rate
     end
     Money.new(((Money::Currency.wrap(to_currency).subunit_to_unit.to_f / from.currency.subunit_to_unit.to_f) * from.cents * rate).round, to_currency)
