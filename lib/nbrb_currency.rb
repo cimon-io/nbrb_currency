@@ -13,7 +13,7 @@ class NbrbCurrency < Money::Bank::VariableExchange
 
   def update_rates(cache=nil)
     exchange_rates(cache).each do |exchange_rate|
-      rate = exchange_rate.xpath("Rate").text.gsub('.', '').gsub(',', '.')
+      rate = exchange_rate.xpath("Rate").text
       currency = exchange_rate.xpath("CharCode").text
       scale = exchange_rate.xpath("Scale").text
       next if currency == "XDR"
