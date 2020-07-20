@@ -17,8 +17,8 @@ class NbrbCurrency < Money::Bank::VariableExchange
       currency = exchange_rate.xpath("CharCode").text
       scale = exchange_rate.xpath("Scale").text
       next if currency == "XDR"
-      add_rate(currency, "BYN", (BigDecimal(rate) / BigDecimal(scale)).to_f)
-      add_rate(currency, "BYR", (BigDecimal(rate) / BigDecimal(scale)).to_f * DENOMINATION_RATE)
+      add_rate(currency, "BYN", (BigDecimal(rate) / BigDecimal(scale)).to_f / DENOMINATION_RATE)
+      add_rate(currency, "BYR", (BigDecimal(rate) / BigDecimal(scale)).to_f)
     end
     add_rate("BYN", "BYN", 1)
     add_rate("BYR", "BYR", 1)
